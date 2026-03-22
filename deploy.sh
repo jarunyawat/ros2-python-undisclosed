@@ -61,7 +61,6 @@ done < <(find "$SRC" -name "package.xml")
 
 if [ ${#PYTHON_PKGS[@]} -eq 0 ]; then
     echo "  No ament_python packages found!"
-    exit 1
 fi
 
 echo "  Total: ${#PYTHON_PKGS[@]} package(s)"
@@ -141,7 +140,11 @@ echo ""
 echo "[3/4] Building workspace..."
 cd "$WS"
 
-colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+if ! colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release; then
+    echo "  Build failed ✗"
+    exit 1
+fi
+echo "  Build complete ✓"
 
 echo "  Build complete ✓"
 
@@ -189,12 +192,3 @@ for pkg in "${PYTHON_PKGS[@]}"; do
         echo "      $(basename $so)"
     done
 done
-
-echo ""
-echo "To ship to client, copy the install/ folder:"
-echo "  tar -czf robot_deploy.tar.gz -C $WS install/"
-echo ""
-echo "Client runs:"
-echo "  tar -xzf robot_deploy.tar.gz"
-echo "  source install/setup.bash"
-echo "  ros2 run <pkg> <node>"
