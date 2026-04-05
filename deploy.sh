@@ -167,11 +167,11 @@ for pkg in "${PYTHON_PKGS[@]}"; do
     fi
 
     # Count before
-    py_count=$(find "$install_dir" -name "*.py" ! -name "__init__.py" | wc -l)
+    py_count=$(find "$install_dir" -name "*.py" ! -name "__init__.py" ! -name "*.launch.py" | wc -l)
     so_count=$(find "$install_dir" -name "*.so" | wc -l)
 
     # Delete source .py files
-    find "$install_dir" -name "*.py" ! -name "__init__.py" -delete
+    find "$install_dir" -name "*.py" ! -name "__init__.py" ! -name "*.launch.py" -delete
 
     # Also delete __pycache__
     find "$install_dir" -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
@@ -192,3 +192,4 @@ for pkg in "${PYTHON_PKGS[@]}"; do
         echo "      $(basename $so)"
     done
 done
+
